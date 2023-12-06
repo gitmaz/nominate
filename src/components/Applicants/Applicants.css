@@ -122,6 +122,10 @@
     display: flex;
 }
 
+.Applicant-list li .Applicant-list-item-line-info{
+    padding-top: 5px;
+}
+
 .Applicant-list li .Applicant-list-item-line-buttons{
     margin-left: auto;
 }

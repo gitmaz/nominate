@@ -203,7 +203,7 @@ const Applicants = () => {
                     {applicants.map((applicant) => (
                         <li key={applicant.id} className="Applicant-list-item">
                             <div className="Applicant-list-item-line">
-                                <div>
+                                <div className="Applicant-list-item-line-info">
                                     <span>{applicant.firstName} {applicant.lastName}</span>
                                     <span> - {applicant.email}</span>
                                     <span> - {applicant.mobileNumber}</span>
