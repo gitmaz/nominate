@@ -1,4 +1,20 @@
 {
   "applicants": [
+    {
+      "id": "7dd8e250-f3c1-47d3-a542-900bdbb91ea7",
+      "firstName": "Jack",
+      "lastName": "London",
+      "mobileNumber": "0430098364",
+      "email": "jack@london.com",
+      "isPrimary": false
+    },
+    {
+      "id": "354757c5-b601-4ec0-954e-8cad2613791b",
+      "firstName": "maziar",
+      "lastName": "navabi",
+      "mobileNumber": "0430098366",
+      "email": "mn@jjj.com",
+      "isPrimary": true
+    }
   ]
 }

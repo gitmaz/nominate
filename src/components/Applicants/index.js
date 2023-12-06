@@ -91,8 +91,22 @@ const Applicants = () => {
 
     
 
-    const handleDeleteApplicant = (applicant) => {
-        setApplicants((prevApplicants) => prevApplicants.filter((a) => a.id !== applicant.id));
+    const handleDeleteApplicant = async (applicant) => {
+        //setApplicants((prevApplicants) => prevApplicants.filter((a) => a.id !== applicant.id));
+
+        try {
+            const response = await fetch(`http://localhost:3001/applicants/${applicant.id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error deleting applicant: ${response.statusText}`);
+            }
+
+            setApplicants((prevApplicants) => prevApplicants.filter((a) => a.id !== applicant.id));
+        } catch (error) {
+            console.error('Error deleting applicant:', error.message);
+        }
     };
 
     const handleCancelEdit = () => {
@@ -108,23 +122,52 @@ const Applicants = () => {
     const handleSaveApplicants = async () => {
         // Save the list of applicants to the JSON Server
         // TODO: make this working - currently has an issue with uuids
-        /* const response = await fetch('http://localhost:3001/applicants', {
+        /*const response = await fetch('http://localhost:3001/applicants', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(applicants),
-        }); */
+        });
+        */
 
-        const response = { ok: false };
+        for (const applicant of applicants) {
+            const response = await fetch(`http://localhost:3001/applicants/${applicant.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(applicant),
+            });
 
-        if (response.ok) {
-            console.log('Applicants saved successfully!');
-            setSaveMessage({ text: 'Applicants saved successfully!', type: 'success' });
-        } else {
-            console.error('Error saving applicants:', response.statusText);
-            setSaveMessage({ text: 'Saving to the server is to be implemented!', type: 'error' });
+            if(response.status === 404){ //record not found so it is new. create it
+                const response = await fetch(`http://localhost:3001/applicants`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(applicant),
+                });
+
+                if (!response.ok) {
+                    console.error('Error saving applicants:', response.statusText);
+                    throw new Error(`Error creating applicant: ${response.statusText}`);
+                }
+
+            }else {
+
+                if (!response.ok) {
+                    console.error('Error saving applicants:', response.statusText);
+                    throw new Error(`Error updating applicant: ${response.statusText}`);
+                }
+            }
         }
+
+
+        //const response = { ok: false };
+
+        console.log('Applicants saved successfully!');
+        setSaveMessage({ text: 'Applicants saved successfully!', type: 'success' });
 
         setTimeout(() => setSaveMessage({ text: '', type: '' }), 3000);
     };

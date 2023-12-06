@@ -75,7 +75,7 @@ const Applicant = ({ onAddOrUpdateApplicant, onCancelAdd, applicantToEdit, onCan
         }
 
         if (!/^(04)\d{8}$/.test(mobileNumber)) {
-            setMobileNumberError('Please enter a valid mobile number (start with 04 and has 9 digits).');
+            setMobileNumberError('Please enter a valid mobile number (start with 04 and has another 8 digits).');
             isValid = false;
         } else {
             setMobileNumberError('');
