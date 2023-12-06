@@ -245,7 +245,7 @@ const Applicants = () => {
                     {applicants.length === 0 ? 'Add primary applicant' : 'Add new applicant'}
                 </button>
             )}
-            {applicants.length > 0 && !addingApplicant && (
+            {applicants.length > 0 && !addingApplicant && !editingApplicant && (
                 <div className={`save-button-wrapper ${saveMessage.type}`}>
                     {primaryWarning && <div className="Warning-message">{primaryWarning}</div>}
                     {saveMessage.text && (
