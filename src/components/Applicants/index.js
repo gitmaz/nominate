@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Applicants.css';
 import Applicant from './../Applicant';
+import { v4 as uuidv4 } from 'uuid';
 
 const Applicants = () => {
     const [applicants, setApplicants] = useState([]);
@@ -13,7 +14,7 @@ const Applicants = () => {
 
     useEffect(() => {
 
-        //TODO: move all asyncs which communicated to backend in services folder (for ex services/api.service.js)
+        //TODO: move all asyncs which communicate to backend in services folder (for ex services/api.service.js)
         const fetchData = async () => {
             try {
                 const response = await fetch('http://localhost:3001/applicants');
@@ -68,7 +69,7 @@ const Applicants = () => {
             setEditingApplicant(null);
         } else {
             const newApplicant = {
-                id: applicants.length + 1, // Use a simple incremental ID
+                id: uuidv4(),
                 firstName,
                 lastName,
                 mobileNumber,
