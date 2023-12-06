@@ -45,7 +45,12 @@ const Applicants = () => {
         }
     }, [applicants]);
 
-    const handleAddApplicant = ({ firstName, lastName, mobileNumber, email, isPrimary }) => {
+    const handleEditApplicant = (applicant) => {
+        setAddingApplicant(false);
+        setEditingApplicant(applicant);
+    };
+    
+    const handleAddOrUpdateApplicant  = ({ firstName, lastName, mobileNumber, email, isPrimary }) => {
         if (hasDuplicates(email, editingApplicant?.id)) {
             return { status: 'failure', reason: 'has duplicates' };
         }
@@ -84,10 +89,7 @@ const Applicants = () => {
         return { status: 'success' };
     };
 
-    const handleEditApplicant = (applicant) => {
-        setAddingApplicant(false);
-        setEditingApplicant(applicant);
-    };
+    
 
     const handleDeleteApplicant = (applicant) => {
         setApplicants((prevApplicants) => prevApplicants.filter((a) => a.id !== applicant.id));
@@ -174,7 +176,7 @@ const Applicants = () => {
                             </div>
                             {(editingApplicant && editingApplicant.id === applicant.id) && (
                                 <Applicant
-                                    onAddApplicant={handleAddApplicant}
+                                    onAddOrUpdateApplicant={handleAddOrUpdateApplicant }
                                     onCancelAdd={handleCancelAdd}
                                     applicantToEdit={editingApplicant}
                                     onCancelEdit={handleCancelEdit}
@@ -185,7 +187,7 @@ const Applicants = () => {
                     {addingApplicant && (
                         <li key="new-applicant" className="Applicant-list-item">
                             <Applicant
-                                onAddApplicant={handleAddApplicant}
+                                onAddOrUpdateApplicant={handleAddOrUpdateApplicant }
                                 onCancelAdd={handleCancelAdd}
                                 isFirstApplicant={applicants.length === 0}
                             />

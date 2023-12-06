@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 /*
   This component is responsible of rendering individual applicant dialogs
  */
-const Applicant = ({ onAddApplicant, onCancelAdd, applicantToEdit, onCancelEdit, isFirstApplicant }) => {
+const Applicant = ({ onAddOrUpdateApplicant, onCancelAdd, applicantToEdit, onCancelEdit, isFirstApplicant }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
@@ -43,13 +43,13 @@ const Applicant = ({ onAddApplicant, onCancelAdd, applicantToEdit, onCancelEdit,
         }
     }, [isPrimary, isEditingPrimary]);
 
-    const handleAddApplicant = () => {
+    const handleAddOrUpdateApplicant  = () => {
 
         if (!validateForm()) {
             return;
         }
 
-       if(onAddApplicant({ firstName, lastName, mobileNumber, email, isPrimary }).status === "failure"){
+       if(onAddOrUpdateApplicant({ firstName, lastName, mobileNumber, email, isPrimary }).status === "failure"){
            setEmailWarning('Emails are not unique amongst applicants.');
        }else{
            setEmailWarning('');
@@ -163,7 +163,7 @@ const Applicant = ({ onAddApplicant, onCancelAdd, applicantToEdit, onCancelEdit,
             </label>
             <br />
             {emailWarning && <div className="Warning-message">{emailWarning}</div>}
-            <button onClick={handleAddApplicant}>Ok</button>
+            <button onClick={handleAddOrUpdateApplicant }>Ok</button>
             <button className="cancel" onClick={handleCancel}>
                 Cancel
             </button>
