@@ -4,7 +4,7 @@ import Applicant from './../Applicant';
 import { v4 as uuidv4 } from 'uuid';
 
 const Applicants = () => {
-    const isProd = false;
+    const isProd = true;
     const endpointBaseUri = isProd ?
         'https://z4ck1m8k8g.execute-api.ap-southeast-2.amazonaws.com/Prod/api'
         : 'http://localhost:3001';
@@ -26,6 +26,7 @@ const Applicants = () => {
                 const response = await fetch(`${endpointBaseUri}/applicants`);
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data);
                     setApplicants(data);
                 } else {
                     console.error('Error fetching applicants:', response.statusText);

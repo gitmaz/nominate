@@ -1,0 +1,7 @@
+install aws toolkit plugin
+ctrl + shift p
+create Sam app
+sam build
+sam local invoke
+sam local invoke -e events/event.json
+sam deploy --guidedsa`
