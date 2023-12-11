@@ -1,4 +1,5 @@
 import os from "os";
+//import { listApplicants } from "./database/list-applicants"; // Import listApplicants function
 
 /**
  *
@@ -15,6 +16,10 @@ import os from "os";
 
 export const lambdaHandler = async (event, context) => {
     try {
+
+        // Call the listApplicants function to get the list of applicants
+        //const allApplicants = await listApplicants();
+
         return {
             'statusCode': 200,
             headers: {
@@ -31,6 +36,7 @@ export const lambdaHandler = async (event, context) => {
                 isPrimary : false,
                 os : os.hostname()
             }])
+            //'body': JSON.stringify(allApplicants) // Return the list of applicants
         }
     } catch (err) {
         console.log(err);

@@ -1,4 +1,4 @@
-install aws toolkit plugin
+install aws toolkit plugin (vscode)
 ctrl + shift p
 create Sam app
 sam build
