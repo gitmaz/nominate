@@ -4,6 +4,10 @@ import Applicant from './../Applicant';
 import { v4 as uuidv4 } from 'uuid';
 
 const Applicants = () => {
+    const isProd = false;
+    const endpointBaseUri = isProd ?
+        'https://z4ck1m8k8g.execute-api.ap-southeast-2.amazonaws.com/Prod/api'
+        : 'http://localhost:3001';
     const [applicants, setApplicants] = useState([]);
     const [addingApplicant, setAddingApplicant] = useState(false);
     const [editingApplicant, setEditingApplicant] = useState(null);
@@ -12,12 +16,14 @@ const Applicants = () => {
     const [loading, setLoading] = useState(true);
     const [saveMessage, setSaveMessage] = useState({ text: '', type: '' });
 
+
     useEffect(() => {
 
         //TODO: move all asyncs which communicate to backend in services folder (for ex services/api.service.js)
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3001/applicants');
+                console.log(`${endpointBaseUri}/applicants`);
+                const response = await fetch(`${endpointBaseUri}/applicants`);
                 if (response.ok) {
                     const data = await response.json();
                     setApplicants(data);
@@ -32,7 +38,7 @@ const Applicants = () => {
         };
 
         fetchData();
-    }, []);
+    }, [endpointBaseUri]);
 
     useEffect(() => {
         const hasPrimaryApplicant = applicants.some((applicant) => applicant.isPrimary);
@@ -95,7 +101,7 @@ const Applicants = () => {
         //setApplicants((prevApplicants) => prevApplicants.filter((a) => a.id !== applicant.id));
 
         try {
-            const response = await fetch(`http://localhost:3001/applicants/${applicant.id}`, {
+            const response = await fetch(`${endpointBaseUri}/applicants/${applicant.id}`, {
                 method: 'DELETE',
             });
 
@@ -120,20 +126,10 @@ const Applicants = () => {
 
     //TODO: move all asyncs which communicated to backend in services folder (for ex services/api.service.js)
     const handleSaveApplicants = async () => {
-        // Save the list of applicants to the JSON Server
-        // TODO: make this working - currently has an issue with uuids
-        /*const response = await fetch('http://localhost:3001/applicants', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(applicants),
-        });
-        */
 
         for (const applicant of applicants) {
-            const response = await fetch(`http://localhost:3001/applicants/${applicant.id}`, {
-                method: 'PUT',
+            const response = await fetch(`${endpointBaseUri}/applicants/${applicant.id}`, {
+                method: 'POST', //'PUT', //use put for when real REST is implemented in backend (currently be uses upsert)
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -141,7 +137,7 @@ const Applicants = () => {
             });
 
             if(response.status === 404){ //record not found so it is new. create it
-                const response = await fetch(`http://localhost:3001/applicants`, {
+                const response = await fetch(`${endpointBaseUri}/applicants`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -164,7 +160,7 @@ const Applicants = () => {
         }
 
 
-        //const response = { ok: false };
+        //const response = { ok: false }; //kept for debug
 
         console.log('Applicants saved successfully!');
         setSaveMessage({ text: 'Applicants saved successfully!', type: 'success' });
