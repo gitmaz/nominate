@@ -1,0 +1,35 @@
+@ flushing without deleting cluster :
+
+- Scale Down the StatefulSet:
+
+Use the kubectl scale command to scale down the number of replicas for your StatefulSet to 0.
+
+kubectl scale statefulset <statefulset-name> --replicas=0
+Replace <statefulset-name> with the name of your MongoDB StatefulSet.
+
+- Wait for Pods to Terminate:
+
+Wait for Kubernetes to terminate the existing pods. You can monitor the status using:
+
+kubectl get pods -w
+The pods should eventually reach a Terminating state and then be deleted.
+
+- Delete the StatefulSet:
+
+After the pods are terminated, you can delete the StatefulSet:
+
+kubectl delete statefulset <statefulset-name>
+Delete the PersistentVolumeClaims (PVCs):
+
+- Delete storage
+
+If you have persistent storage associated with your StatefulSet, you may also want to delete the associated PersistentVolumeClaims (PVCs).
+
+kubectl delete pvc -l app=<statefulset-name>
+Check for AWS Resources:
+
+Verify that the AWS resources (EC2 instances, EBS volumes, etc.) associated with the nodes are terminated or deleted. You can check the AWS Management Console or use AWS CLI commands.
+
+@ flush with deleting cluster :
+
+eksctl delete cluster --region ap-southeast-2 --name  maz-applicants-app-cluster

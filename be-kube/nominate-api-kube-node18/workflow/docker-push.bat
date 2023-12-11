@@ -1,0 +1,1 @@
+docker push mazishka/applicants-kube-api-app

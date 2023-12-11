@@ -1,0 +1,1 @@
+docker build -t mazishka/applicants-kube-api-app ./../.

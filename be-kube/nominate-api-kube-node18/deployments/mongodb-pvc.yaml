@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # - ReadWriteMany
+  #storageClassName:   ""  # Empty to use the default storage class #efs-sc
+  storageClassName:   new-gp2  # Empty to use the default storage class #efs-sc
+  # storageClassName:   efs-sc # for ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi  # Requested storage size, should match the PersistentVolume size

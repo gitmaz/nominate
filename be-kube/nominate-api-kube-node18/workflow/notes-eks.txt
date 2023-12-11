@@ -1,0 +1,33 @@
+arn:aws:iam::154501673607:role/aws-service-role/eks.amazonaws.com/AWSServiceRoleForAmazonEKS
+
+
+
+@@@  creating  EKS cluster
+
+ eksctl create cluster --name maz-cluster-1 --region ap-southeast-2 --node-type t3.micro --nodes 3
+
+
+@@@ for eksctl to work, add these identity roles to your user:
+
+IAMUserChangePassword	AWS managed	Directly
+? AWSCloudFormationFullAccess	AWS managed	Directly
+* AmazonEKSServicePolicy	AWS managed	Directly                                   
+* AmazonEKSClusterPolicy	AWS managed	Directly
+* AdministratorAccess        
+
+or update one of the policies using:
+
+
+
+@ eksctl delete cluster --region ap-southeast-2 --name maz-cluster-1
+Update IAM Policy:
+Modify the IAM policy to include the following policy statement allowing the iam:CreateRole action:
+
+
+{
+    "Effect": "Allow",
+    "Action": "iam:CreateRole",
+    "Resource": "arn:aws:iam::154501673607:role/eksctl-maz-cluster-1-cluster-ServiceRole-MmRQM79MKaWG"
+}
+
+@use min previlage policy , for last resolve use AdminRole for your account.

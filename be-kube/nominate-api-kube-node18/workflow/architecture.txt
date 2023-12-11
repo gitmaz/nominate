@@ -1,0 +1,66 @@
+The layout of containers inside each node in a Kubernetes cluster can be quite dynamic and depends on the specific configuration, deployments, and services running in the cluster. Below is a simplified representation of the layout you might have in each node of your EKS cluster for an application with an API service and an in-house MongoDB deployment.
+
+
+Node 1
+|-- Pod: app-api-pod-1
+|   |-- Container: app-api-container
+|-- Pod: mongodb-pod-1
+|   |-- Container: mongodb-container
+|-- ...
+
+Node 2
+|-- Pod: app-api-pod-2
+|   |-- Container: app-api-container
+|-- Pod: mongodb-pod-2
+|   |-- Container: mongodb-container
+|-- ...
+
+Node 3
+|-- Pod: app-api-pod-3
+|   |-- Container: app-api-container
+|-- Pod: mongodb-pod-3
+|   |-- Container: mongodb-container
+|-- ...
+Explanation:
+
+Nodes: Physical or virtual machines in your EKS cluster.
+Pods: The smallest deployable units in Kubernetes, containing one or more containers.
+Containers: Individual containers running inside each pod.
+In this example:
+
+You have multiple nodes (e.g., 3 nodes as specified in your eksctl command).
+Each node can host multiple pods.
+For the app API, you have a pod (app-api-pod-N) running with a container (app-api-container) inside it.
+For MongoDB, you have a pod (mongodb-pod-N) running with a container (mongodb-container) inside it.
+Keep in mind that the actual layout can vary based on your application's configurations, resource requests, and scheduling decisions made by Kubernetes. Additionally, services and other Kubernetes objects might influence the overall architecture. If you have specific services or configurations, the layout could be more complex.
+
+You can inspect the running pods and containers on your nodes using commands like kubectl get pods or kubectl describe node <node-name> to get more detailed information.
+
+
+is there a container serving kubernetese internal on each ec2 node or it is installed on the virtual machine itself (each node I assume is EC2 virtual machine)
+
+In a typical Kubernetes cluster, including Amazon EKS, Kubernetes itself is installed on the underlying virtual machines (EC2 instances in the case of AWS EKS). Kubernetes runs as system-level components on each node in the cluster.
+
+Here's a high-level breakdown of components:
+
+Node Components (on each EC2 instance):
+
+kubelet: An agent that runs on each node in the cluster. It makes sure that containers are running in a Pod.
+kube-proxy: Maintains network rules on nodes. These network rules allow network communication to your Pods from network sessions inside or outside of your cluster.
+Control Plane Components (master nodes):
+
+kube-apiserver: Exposes the Kubernetes API.
+etcd: Consistent and highly-available key-value store used as Kubernetes' backing store for all cluster data.
+kube-scheduler: Watches for newly created Pods with no assigned node and selects a node for them to run on.
+kube-controller-manager: Runs controller processes that regulate the state of the system. Examples include the ReplicationController, EndpointController, and Service Account & Token Controllers.
+Add-ons (optional):
+
+These are additional components that can be added for various functionalities such as networking (e.g., Calico, Flannel), DNS (e.g., CoreDNS), and more.
+The kubelet and kube-proxy run as containers themselves, managed by the system container runtime (e.g., Docker, containerd). These components work together to manage the containers and provide the orchestration functionality.
+
+In summary, Kubernetes components are installed on each node, and they collectively form a cluster to manage containers and workloads.
+
+
+
+
+

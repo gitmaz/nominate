@@ -1,0 +1,174 @@
+docker build -t mazishka/applicants-kube-api-app .
+docker push mazishka/applicants-kube-api-app
+
+- for testing 
+docker run -p 3000:3000 mazishka/applicants-kube-api-app
+
+@eks create cluster
+eksctl create cluster --name maz-applicants-app-cluster --region ap-southeast-2 --node-type t3.micro --nodes 3
+
+@kubectl make sure selected context is right:
+> kubectl config current-context
+
+
+> kubectl config get-contexts
+CURRENT   NAME                                          CLUSTER                                  AUTHINFO                                      NAMESPACE
+*         mazi@maz-cluster-1.ap-southeast-2.eksctl.io   maz-cluster-1.ap-southeast-2.eksctl.io   mazi@maz-cluster-1.ap-southeast-2.eksctl.io
+
+kubectl config use-context  mazi@maz-cluster-1.ap-southeast-2.eksctl.io
+
+@kubectl view config:
+notepad %USERPROFILE%\.kube\config 
+
+cd ./database
+kubectl apply -f mongo-statefulset-deployment.yaml
+cd ..
+kubectl apply -f deployment.yaml
+or explicitly: kubectl --context=mazi@maz-applicants-app-cluster.ap-southeast-2.eksctl.io apply -f deployment.yaml
+kubectl get svc -w
+
+
+
+@kubectl check pods are created
+kubectl get pods
+kubectl get pods -o wide
+kubectl get deployments
+
+@kubectl check pod error logs
+kubectl logs -l app=applicants-kube-api-app
+
+
+@kubectl switch to docker-desktop kubernetese context:
+kubectl config use-context docker-desktop
+
+
+
+@eks create cluster
+eksctl create cluster --name maz-applicants-app-cluster --region ap-southeast-2 --node-type t3.micro --nodes 3
+
+
+@list clusters
+kubectl config get-contexts   
+
+@check pods
+kubectl get pods
+kubectl describe pods
+
+kubectl delete pvc mongodb-pvc
+
+
+
+@eks delete cluster
+eksctl delete cluster --region ap-southeast-2 --name  maz-applicants-app-cluster
+
+@cleanup -- see notes-eks
+kubectl scale statefulset <statefulset-name> --replicas=0
+
+
+@cleanup 
+kubectl delete -f mongodb-statefulset-deployment.yaml -f mongodb-service.yaml
+kubectl delete -f mongodb-statefulset.yaml -f mongodb-service.yaml
+
+
+@kubectl set image
+kubectl set image deployment/applicants-kube-api-app-deployment \
+  applicants-kube-api-app=mazishka/applicants-kube-api-app:latest
+
+
+------------------------------------------------------------------
+
+
+
+
+@run app locally in isolation to kubernetese:
+
+ -mongo server
+ docker run -d -p 27017:27017 --name mongodb mongo:latest
+
+--our api server
+ docker run -p 3000:3000 mazishka/applicants-kube-api-app
+ or 
+ docker restart mazishka/applicants-kube-api-app
+
+
+--- db
+
+@mongo shell client
+mongo --host 127.0.0.1 --port 27017
+
+-setup password
+    # Connect to MongoDB shell
+    mongo
+
+    # Switch to the admin database
+    use admin
+
+    # Create a user with a username and password
+    db.createUser({
+    user: "yourUsername",
+    pwd: "yourPassword",
+    roles: ["readWrite", "dbAdmin"]
+    })
+
+    # Enable authentication
+    db.auth("yourUsername", "yourPassword")
+
+    # Exit the MongoDB shell
+    exit
+
+- insert record via client
+> use mydatabase
+switched to db mydatabase
+
+> db.mycollection.insert({ name: 'John Doe' })
+
+example:
+> use applicants-app-db
+>db.applicants.insertOne({uuid: '1', firstName: 'maziar', lastName: 'navabi', mobileNr: '0430098363', email: 'mn.usyd@gmail.com', isPrimary: false})  
+
+
+- list items in collection:
+db.applicants.find().pretty()
+
+- delete items with uuid '1'
+
+db.applicants.deleteOne({ uuid: '1' })
+db.applicants.deleteMany({ uuid: '1' })
+
+
+@mongo client (web based - mongo express)
+docker run -d -p 8081:8081 --name mongo-express ^
+  -e ME_CONFIG_MONGODB_SERVER=127.0.0.1 ^
+  -e ME_CONFIG_MONGODB_PORT=27017 ^
+  -e ME_CONFIG_MONGODB_ADMINUSERNAME=root ^
+  -e ME_CONFIG_MONGODB_ADMINPASSWORD=example ^
+  mongo-express
+ 
+example  -without credentials set:
+docker run -d -p 8081:8081 --name mongo-express ^
+  -e ME_CONFIG_MONGODB_SERVER=127.0.0.1 ^
+  -e ME_CONFIG_MONGODB_PORT=27017 ^
+  mongo-express
+
+docker run --name mongo-express --network some-network -e ME_CONFIG_MONGODB_SERVER=some-mongo -p 8081:8081 
+
+docker run --name mongo-express  -e ME_CONFIG_MONGODB_SERVER=mongo -p 8081:8081
+ 
+http://localhost:8081  
+
+
+- postman upsert:
+ post http://localhost:3000/api/applicants
+
+ body json:
+
+ [
+    {
+        "uuid": "2",
+        "firstName": "max", 
+        "lastName": "amini", 
+        "mobileNr": "0430098363", 
+        "email": "max@gmail.com", 
+        "isPrimary": false
+    }
+]

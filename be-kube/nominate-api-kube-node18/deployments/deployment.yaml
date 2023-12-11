@@ -1,0 +1,33 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: applicants-kube-api-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: applicants-kube-api-app
+  template:
+    metadata:
+      labels:
+        app: applicants-kube-api-app
+    spec:
+      containers:
+        - name: applicants-kube-api-app
+          image: mazishka/applicants-kube-api-app:latest
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: applicants-kube-api-app-service
+spec:
+  selector:
+    app: applicants-kube-api-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

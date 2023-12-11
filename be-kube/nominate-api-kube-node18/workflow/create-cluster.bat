@@ -1,0 +1,1 @@
+eksctl create cluster --name maz-applicants-app-cluster --region ap-southeast-2 --node-type t3.micro --nodes 3
